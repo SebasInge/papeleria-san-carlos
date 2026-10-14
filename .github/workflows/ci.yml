@@ -1,0 +1,64 @@
+name: CI - Backend
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-check:
+    runs-on: ubuntu-latest
+
+    services:
+      mariadb:
+        image: mariadb:11
+        env:
+          MYSQL_ROOT_PASSWORD: ci_root_password
+          MYSQL_DATABASE: papeleria_san_carlos
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Verificar sintaxis de todos los archivos JS
+        run: |
+          find . -name "*.js" -not -path "./node_modules/*" -print0 \
+            | xargs -0 -n1 node --check
+
+      - name: Cargar el esquema en MariaDB
+        run: |
+          mysql -h 127.0.0.1 -P 3306 -u root -pci_root_password papeleria_san_carlos < schema.sql
+
+      - name: Arrancar el servidor y verificar /api/health
+        env:
+          PORT: 3000
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: root
+          DB_PASSWORD: ci_root_password
+          DB_NAME: papeleria_san_carlos
+          JWT_SECRET: ci_test_secret
+          JWT_EXPIRES_IN: 8h
+        run: |
+          node server.js &
+          SERVER_PID=$!
+          sleep 3
+          curl -sf http://localhost:3000/api/health
+          kill $SERVER_PID

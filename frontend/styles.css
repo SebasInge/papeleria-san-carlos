@@ -1,0 +1,675 @@
+/* =====================================================================
+   Catálogo Digital — Papelería San Carlos
+   RNF-01: paleta institucional (blanco, negro, rosado, amarillo,
+   verde aguamarina). No se usan colores fuera de esta paleta.
+   ===================================================================== */
+
+:root {
+  --blanco: #ffffff;
+  --negro: #000000;
+  --rosado: #ee4c8d;
+  --rosado-claro: #fde4ee;
+  --amarillo: #ffd400;
+  --aguamarina: #2fbfa8;
+  --aguamarina-claro: #d9f5ef;
+
+  --renglon: rgba(0, 0, 0, 0.06);
+  --borde: rgba(0, 0, 0, 0.14);
+
+  --ancho-barra: 15rem;
+  --radio: 0.5rem;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Work Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--negro);
+  background-color: var(--blanco);
+  /* Renglones de cuaderno: motivo de papelería, muy tenue. */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 1.9rem,
+    var(--renglon) 1.9rem,
+    var(--renglon) calc(1.9rem + 1px)
+  );
+  line-height: 1.55;
+}
+
+h1, h2, h3 {
+  font-family: "Bricolage Grotesque", "Work Sans", sans-serif;
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 0;
+}
+
+img { max-width: 100%; display: block; }
+
+ul { list-style: none; margin: 0; padding: 0; }
+
+:focus-visible {
+  outline: 3px solid var(--aguamarina);
+  outline-offset: 2px;
+}
+
+.saltar {
+  position: absolute;
+  left: -100vw;
+  background: var(--negro);
+  color: var(--blanco);
+  padding: 0.6rem 1rem;
+  z-index: 10;
+}
+.saltar:focus { left: 0.5rem; top: 0.5rem; }
+
+/* ----------------------------- Cabecera ----------------------------- */
+
+.cabecera {
+  border-bottom: 2px solid var(--negro);
+  background: var(--blanco);
+  padding: 1.1rem clamp(1rem, 4vw, 2.5rem);
+  background: linear-gradient(135deg, var(--aguamarina) 0%, var(--rosado) 100%);
+}
+
+.cabecera__marca {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 1rem;
+}
+
+.cabecera__nombre {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.4rem, 3.5vw, 2rem);
+  letter-spacing: -0.02em;
+  /* Trazo de resaltador amarillo bajo el nombre. */
+  background: linear-gradient(to top, var(--amarillo) 0.35em, transparent 0.35em);
+}
+
+.cabecera__lema {
+  font-size: 0.95rem;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.cabecera__logo {
+  max-width: min(100%, 40rem);   /* ← ajusta el ancho máximo aquí */
+  max-height: 20rem;               /* ← ajusta la altura máxima aquí */
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  margin: auto;
+}
+
+/* ---------------------------- Disposición --------------------------- */
+
+.disposicion {
+  display: grid;
+  grid-template-columns: var(--ancho-barra) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  max-width: 78rem;
+  margin: 0 auto;
+  padding: clamp(1rem, 3vw, 2rem) clamp(1rem, 4vw, 2.5rem) 3rem;
+}
+
+/* --------------- Barra lateral de categorías (RF-13, RF-11) --------- */
+
+.contenido { min-width: 0; }
+
+.categorias {
+  position: sticky;
+  top: 1.5rem;
+  /* Margen rosado vertical, como el de una hoja de cuaderno. */
+  border-left: 2px solid var(--rosado);
+  padding-left: 1rem;
+}
+
+.categorias__titulo {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.categorias__lista { display: flex; flex-direction: column; gap: 0.15rem; }
+
+.categorias__cargando {
+  font-size: 0.9rem;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+/* Fila de un nodo del árbol de categorías: toggle (si tiene hijos) + botón.
+   --nivel lo fija app.js (0 = raíz) y controla la sangría del acordeón. */
+.categoria-fila {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  padding-left: calc(var(--nivel, 0) * 0.9rem);
+}
+
+.categoria__toggle {
+  flex: 0 0 1.4rem;
+  height: 1.4rem;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--negro);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.categoria__toggle:hover { background: var(--aguamarina-claro); }
+
+/* Gira la flecha hacia abajo cuando el acordeón está abierto. */
+.categoria__toggle[aria-expanded="true"] { transform: rotate(90deg); }
+
+.categoria__toggle--vacio { cursor: default; }
+.categoria__toggle--vacio:hover { background: transparent; }
+
+/* Subcategorías (nivel 2 y 3): mismo componente .categoria, indentado. */
+.categoria__hijos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin-top: 0.15rem;
+}
+
+.categoria__hijos[hidden] { display: none; }
+
+.categoria {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0.5rem 0.6rem;
+  border: 0;
+  border-radius: var(--radio);
+  background: transparent;
+  font: inherit;
+  font-size: 0.97rem;
+  text-align: left;
+  color: var(--negro);
+  cursor: pointer;
+}
+
+.categoria:hover { background: var(--aguamarina-claro); }
+
+.categoria[aria-current="true"] {
+  font-weight: 600;
+  /* Trazo de resaltador aguamarina en la categoría activa. */
+  background: linear-gradient(to top, var(--aguamarina-claro) 100%, transparent 0);
+  box-shadow: inset 3px 0 0 var(--aguamarina);
+}
+
+.categoria__icono {
+  flex: 0 0 1.75rem;
+  height: 1.75rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--rosado-claro);
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.categoria[aria-current="true"] .categoria__icono { background: var(--amarillo); }
+
+.categoria__etiqueta { flex: 1 1 auto; }
+
+/* Distintivo de categoría de temporada (RF-08). */
+.categoria__temporada {
+  flex: 0 0 auto;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  background: var(--amarillo);
+  color: var(--negro);
+}
+
+/* ---------------------- Banner de anuncios (RF-05) ------------------ */
+
+.banner { margin-bottom: clamp(1.5rem, 4vw, 2.5rem); }
+
+.banner__marco {
+  overflow: hidden;
+  border: 2px solid var(--negro);
+  border-radius: var(--radio);
+  background: var(--blanco);
+}
+
+.banner__pista {
+  display: flex;
+  transition: transform 0.4s ease;
+}
+
+.banner__lamina {
+  flex: 0 0 100%;
+  aspect-ratio: 16 / 6;
+  background: var(--rosado-claro);
+}
+
+.banner__lamina img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.banner__controles {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 0.7rem;
+}
+
+.banner__flecha {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid var(--negro);
+  border-radius: 50%;
+  background: var(--blanco);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.banner__flecha:hover { background: var(--amarillo); }
+
+.banner__puntos { display: flex; gap: 0.4rem; }
+
+.banner__punto {
+  width: 0.7rem;
+  height: 0.7rem;
+  padding: 0;
+  border: 1.5px solid var(--negro);
+  border-radius: 50%;
+  background: var(--blanco);
+  cursor: pointer;
+}
+
+.banner__punto[aria-current="true"] { background: var(--rosado); }
+
+@media (prefers-reduced-motion: reduce) {
+  .banner__pista { transition: none; }
+}
+
+/* ------------------------- Catálogo (RF-01) ------------------------- */
+
+.catalogo__encabezado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.catalogo__titulo {
+  font-size: clamp(1.5rem, 4vw, 2.1rem);
+  letter-spacing: -0.02em;
+}
+
+.catalogo__conteo {
+  margin: 0;
+  font-size: 0.9rem;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  gap: 1rem;
+}
+
+.producto {
+  display: flex;
+  flex-direction: column;
+  border: 1.5px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--blanco);
+  overflow: hidden;
+}
+
+.producto__lamina {
+  aspect-ratio: 4 / 3;
+  background: var(--aguamarina-claro);
+  display: grid;
+  place-items: center;
+}
+
+.producto__lamina img { width: 100%; height: 100%; object-fit: cover; }
+
+.producto__inicial {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--aguamarina);
+}
+
+.producto__cuerpo { padding: 0.8rem 0.9rem 1rem; }
+
+.producto__nombre {
+  font-size: 1.02rem;
+  margin-bottom: 0.3rem;
+}
+
+.producto__descripcion {
+  margin: 0;
+  font-size: 0.9rem;
+  color: rgba(0, 0, 0, 0.72);
+}
+
+.estado {
+  padding: 2rem 0;
+  font-size: 0.95rem;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.estado--error { color: var(--rosado); font-weight: 500; }
+
+/* ------------------------------- Pie -------------------------------- */
+
+.pie {
+  border-top: 2px solid var(--negro);
+  padding: 1.2rem clamp(1rem, 4vw, 2.5rem);
+  font-size: 0.9rem;
+  background: var(--blanco);
+}
+
+.pie p { margin: 0 0 0.75rem; }
+
+.pie__whatsapp {
+  position: fixed;
+  right: clamp(1rem, 3vw, 2rem);
+  bottom: clamp(1rem, 3vw, 2rem);
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border: 2px solid var(--negro);
+  border-radius: 50%;
+  background: var(--aguamarina);
+  color: var(--negro);
+  box-shadow: 3px 3px 0 var(--negro);
+  text-decoration: none;
+}
+
+.pie__whatsapp svg {
+  width: 2rem;
+  height: 2rem;
+  fill: currentColor;
+}
+
+.pie__whatsapp:hover {
+  background: var(--amarillo);
+  transform: translateY(-2px);
+}
+
+.pie__whatsapp:focus-visible {
+  outline-offset: 4px;
+}
+
+.pie__whatsapp {
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+/* -------------------- Migas de pan (breadcrumb) -------------------- */
+
+.migas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.15rem;
+  font-size: 0.85rem;
+  margin-bottom: 0.65rem;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.migas__enlace {
+  border: 0;
+  background: transparent;
+  padding: 0.15rem 0.3rem;
+  border-radius: var(--radio);
+  font: inherit;
+  font-size: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(0, 0, 0, 0.25);
+  text-underline-offset: 3px;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+.migas__enlace:hover {
+  color: var(--negro);
+  text-decoration-color: var(--aguamarina);
+}
+
+.migas__actual {
+  font-weight: 600;
+  color: var(--negro);
+  padding: 0.15rem 0.3rem;
+}
+
+.migas__sep {
+  color: rgba(0, 0, 0, 0.3);
+  padding: 0 0.1rem;
+}
+
+/* ------------------ Tarjetas de subcategoría ---------------------- */
+
+.subcategorias {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 0.7rem;
+  margin-bottom: 1.5rem;
+}
+
+.subcategorias[hidden] { display: none; }
+
+.subcategoria {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.85rem 0.95rem;
+  border: 1.5px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--blanco);
+  font: inherit;
+  font-size: 0.95rem;
+  text-align: left;
+  color: var(--negro);
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.15s ease,
+              border-color 0.15s ease;
+}
+
+.subcategoria:hover {
+  background: var(--aguamarina-claro);
+  border-color: var(--aguamarina);
+  transform: translateY(-1px);
+}
+
+.subcategoria:focus-visible { outline-offset: 2px; }
+
+.subcategoria__icono {
+  flex: 0 0 2rem;
+  height: 2rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--rosado-claro);
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--negro);
+}
+
+.subcategoria:hover .subcategoria__icono { background: var(--amarillo); }
+
+.subcategoria__nombre {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.subcategoria__temporada {
+  flex: 0 0 auto;
+  font-size: 0.66rem;
+  font-weight: 600;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  background: var(--amarillo);
+  color: var(--negro);
+}
+
+.subcategoria__flecha {
+  flex: 0 0 auto;
+  font-size: 1.15rem;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.35);
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.subcategoria:hover .subcategoria__flecha {
+  transform: translateX(3px);
+  color: var(--negro);
+}
+
+/* ------------------------------ Móvil ------------------------------- */
+
+@media (max-width: 48rem) {
+  .disposicion {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+  }
+
+  .categorias {
+    position: static;
+    border-left: 0;
+    border-bottom: 2px solid var(--rosado);
+    padding-left: 0;
+    padding-bottom: 0.75rem;
+  }
+
+  /* La barra lateral se convierte en una tira deslizable de pestañas. */
+  .categorias__lista {
+    flex-direction: row;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.3rem;
+  }
+
+  .categoria {
+    flex: 0 0 auto;
+    border: 1.5px solid var(--borde);
+  }
+
+  .categoria[aria-current="true"] { border-color: var(--aguamarina); }
+
+  .subcategorias {
+    grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+    gap: 0.55rem;
+  }
+  
+  .subcategoria { padding: 0.7rem 0.8rem; font-size: 0.9rem; }
+  .subcategoria__icono { flex-basis: 1.75rem; height: 1.75rem; font-size: 0.9rem; }
+
+  .banner__lamina { aspect-ratio: 3 / 2; }
+
+
+}
+
+/* ------------------------- Buscador ------------------------- */
+
+
+
+.buscador {
+  flex: 1 1 20rem;
+  max-width: 30rem;
+  min-width: 0;
+  margin: auto;
+}
+
+.buscador__caja {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.buscador__icono {
+  position: absolute;
+  left: 0.75rem;
+  width: 1.15rem;
+  height: 1.15rem;
+  color: rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  flex: 0 0 auto;
+}
+
+.buscador__campo {
+  width: 100%;
+  padding: 0.65rem 2.5rem 0.65rem 2.5rem;
+  border: 2px solid var(--negro);
+  border-radius: var(--radio);
+  background: var(--blanco);
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--negro);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.buscador__campo:focus {
+  outline: none;
+  border-color: var(--aguamarina);
+  box-shadow: 0 0 0 3px var(--aguamarina-claro);
+}
+
+.buscador__campo::-webkit-search-cancel-button { display: none; }
+
+.buscador__limpiar {
+  position: absolute;
+  right: 0.4rem;
+  width: 1.85rem;
+  height: 1.85rem;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--negro);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.buscador__limpiar:hover { background: var(--rosado-claro); }
+.buscador__limpiar[hidden] { display: none; }
+
+@media (max-width: 48rem) {
+  .buscador {
+    flex: 1 1 100%;
+    max-width: none;
+  }
+}

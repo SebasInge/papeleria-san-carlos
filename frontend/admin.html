@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Administración — Papelería San Carlos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+  <!-- VISTA: LOGIN -->
+  <section class="admin-login" id="vistaLogin">
+    <div class="admin-login__caja">
+      <h1 class="admin-login__titulo">Panel de administración</h1>
+      <p class="admin-login__subtitulo">Papelería San Carlos</p>
+
+      <form class="admin-form" id="formLogin">
+        <label class="admin-form__campo">
+          <span>Email</span>
+          <input type="email" id="campoEmail" required autocomplete="username">
+        </label>
+
+        <label class="admin-form__campo">
+          <span>Contraseña</span>
+          <input type="password" id="campoPassword" required autocomplete="current-password">
+        </label>
+
+        <p class="admin-form__error" id="loginError" hidden></p>
+
+        <button type="submit" class="admin-boton admin-boton--primario" id="botonLogin">
+          Ingresar
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- VISTA: PANEL -->
+  <section class="admin-panel" id="vistaPanel" hidden>
+
+    <header class="admin-cabecera">
+      <h1 class="admin-cabecera__titulo">Papelería San Carlos · Admin</h1>
+      <div class="admin-cabecera__acciones">
+        <a href="/" class="admin-boton admin-boton--secundario">Ver catálogo</a>
+        <button type="button" class="admin-boton admin-boton--peligro" id="botonSalir">Cerrar sesión</button>
+      </div>
+    </header>
+
+    <main class="admin-main">
+
+      <!-- Pestañas -->
+      <nav class="admin-tabs" aria-label="Secciones del panel">
+        <button type="button" class="admin-tab admin-tab--activo" data-tab="productos">
+          Productos
+        </button>
+        <button type="button" class="admin-tab" data-tab="categorias">
+          Categorías
+        </button>
+      </nav>
+
+      <!-- Sección Productos -->
+      <section class="admin-seccion" id="seccionProductos">
+        <div class="admin-seccion__cabecera">
+          <h2>Productos</h2>
+          <button type="button" class="admin-boton admin-boton--primario" id="botonNuevoProducto">
+            + Nuevo producto
+          </button>
+        </div>
+
+        <p class="admin-estado" id="estadoProductos">Cargando…</p>
+
+        <table class="admin-tabla" id="tablaProductos" hidden>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Categorías</th>
+              <th class="admin-tabla__acciones">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="cuerpoProductos"></tbody>
+        </table>
+      </section>
+
+      <!-- Sección Categorías -->
+      <section class="admin-seccion" id="seccionCategorias" hidden>
+        <div class="admin-seccion__cabecera">
+          <h2>Categorías</h2>
+          <button type="button" class="admin-boton admin-boton--primario" id="botonNuevaCategoria">
+            + Nueva categoría
+          </button>
+        </div>
+        <p class="admin-estado" id="estadoCategorias">Cargando…</p>
+        <ul class="admin-categorias" id="listaAdminCategorias" hidden></ul>
+      </section>
+
+    </main>
+  </section>
+
+  <!-- MODAL: Crear / editar producto -->
+  <div class="admin-modal" id="modalProducto" hidden>
+    <div class="admin-modal__fondo" id="modalFondo"></div>
+    <div class="admin-modal__caja">
+      <h2 class="admin-modal__titulo" id="modalTitulo">Nuevo producto</h2>
+
+      <form class="admin-form" id="formProducto">
+        <input type="hidden" id="productoId">
+
+        <label class="admin-form__campo">
+          <span>Nombre *</span>
+          <input type="text" id="productoNombre" required>
+        </label>
+
+        <label class="admin-form__campo">
+          <span>Descripción</span>
+          <textarea id="productoDescripcion" rows="3"></textarea>
+        </label>
+
+        <div class="admin-form__campo">
+          <span>Imagen (opcional)</span>
+          <div class="admin-upload" id="zonaUpload">
+            <input type="file" id="productoImagen" accept="image/*" hidden>
+            <button type="button" class="admin-boton admin-boton--secundario" id="botonSubir">
+              Elegir imagen
+            </button>
+            <span class="admin-upload__nombre" id="nombreArchivo">Sin archivo</span>
+          </div>
+          <img id="previewImagen" class="admin-upload__preview" hidden alt="Vista previa">
+        </div>
+
+        <label class="admin-form__campo">
+          <span>Atributos (opcional)</span>
+          <textarea id="productoAtributos" rows="4" placeholder='{"marca":"Nombre","color":"Nombre"...}'></textarea>
+        </label>
+
+        <fieldset class="admin-form__categorias">
+          <legend>Categorías</legend>
+          <div class="admin-form__categorias-lista" id="categoriasProducto"></div>
+        </fieldset>
+
+        <p class="admin-form__error" id="productoError" hidden></p>
+
+        <div class="admin-form__acciones">
+          <button type="button" class="admin-boton admin-boton--secundario" id="botonCancelar">
+            Cancelar
+          </button>
+          <button type="submit" class="admin-boton admin-boton--primario" id="botonGuardar">
+            Guardar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Crear / editar categoría -->
+  <div class="admin-modal" id="modalCategoria" hidden>
+    <div class="admin-modal__fondo" id="modalCategoriaFondo"></div>
+    <div class="admin-modal__caja">
+      <h2 class="admin-modal__titulo" id="modalCategoriaTitulo">Nueva categoría</h2>
+
+      <form class="admin-form" id="formCategoria">
+        <input type="hidden" id="categoriaId">
+
+        <label class="admin-form__campo">
+          <span>Nombre *</span>
+          <input type="text" id="categoriaNombre" required>
+        </label>
+
+        <label class="admin-form__campo">
+          <span>Categoría padre (opcional)</span>
+          <select id="categoriaPadre">
+            <option value="">— Ninguna (categoría raíz) —</option>
+          </select>
+        </label>
+
+        <label class="admin-form__campo">
+          <span>Tipo</span>
+          <select id="categoriaTipo">
+            <option value="normal">Normal</option>
+            <option value="temporada">Temporada</option>
+          </select>
+        </label>
+
+        <label class="admin-form__campo">
+          <span>Ícono (opcional)</span>
+          <input type="text" id="categoriaIcono" placeholder="Ej: cuaderno, carpeta, paleta">
+        </label>
+
+        <label class="admin-form__campo">
+          <span>Orden</span>
+          <input type="number" id="categoriaOrden" value="0" min="0">
+        </label>
+
+        <p class="admin-form__error" id="categoriaError" hidden></p>
+
+        <div class="admin-form__acciones">
+          <button type="button" class="admin-boton admin-boton--secundario" id="botonCancelarCategoria">
+            Cancelar
+          </button>
+          <button type="submit" class="admin-boton admin-boton--primario" id="botonGuardarCategoria">
+            Guardar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

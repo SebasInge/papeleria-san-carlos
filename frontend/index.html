@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Papelería San Carlos — Catálogo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <a class="saltar" href="#catalogo">Saltar al catálogo</a>
+
+      <header class="cabecera">
+    <div class="cabecera__marca">
+      <img
+        src="images/logo.png"
+        alt="Papelería San Carlos — Todo para el colegio, la oficina y la casa"
+        class="cabecera__logo"
+      >
+    </div>
+
+    <form class="buscador" role="search" id="formBuscador" onsubmit="return false;">
+      <div class="buscador__caja">
+        <svg class="buscador__icono" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+          <line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input
+          type="search"
+          id="campoBusqueda"
+          class="buscador__campo"
+          placeholder="Buscar productos…"
+          autocomplete="off"
+          aria-label="Buscar en el catálogo"
+        >
+        <button
+          type="button"
+          class="buscador__limpiar"
+          id="limpiarBusqueda"
+          hidden
+          aria-label="Limpiar búsqueda"
+        >×</button>
+      </div>
+    </form>
+  </header>
+
+  <div class="disposicion">
+
+    <!-- RF-13: barra lateral de categorías con íconos.
+         RF-11: al seleccionar una, el catálogo se filtra. -->
+    <nav class="categorias" aria-label="Categorías del catálogo">
+      <h2 class="categorias__titulo">Categorías</h2>
+      <ul class="categorias__lista" id="listaCategorias">
+        <li class="categorias__cargando">Cargando categorías…</li>
+      </ul>
+    </nav>
+
+    <main class="contenido">
+
+      <!-- RF-05: banner de anuncios destacados -->
+      <section class="banner" id="banner" aria-label="Anuncios destacados" hidden>
+        <div class="banner__marco">
+          <ul class="banner__pista" id="bannerPista"></ul>
+        </div>
+        <div class="banner__controles">
+          <button class="banner__flecha" type="button" id="bannerAnterior" aria-label="Anuncio anterior">&#8249;</button>
+          <ul class="banner__puntos" id="bannerPuntos"></ul>
+          <button class="banner__flecha" type="button" id="bannerSiguiente" aria-label="Anuncio siguiente">&#8250;</button>
+        </div>
+      </section>
+
+      <section id="catalogo" aria-live="polite">
+        <nav class="migas" id="migas" aria-label="Ruta de navegación"></nav>
+
+        <div class="catalogo__encabezado">
+          <h1 class="catalogo__titulo" id="tituloCatalogo">Todo el catálogo</h1>
+          <p class="catalogo__conteo" id="conteoProductos"></p>
+        </div>
+
+        <ul class="subcategorias" id="subcategorias" hidden></ul>
+
+        <ul class="rejilla" id="rejillaProductos"></ul>
+
+        <p class="estado" id="estadoCatalogo">Cargando productos…</p>
+      </section>
+
+    </main>
+  </div>
+
+  <footer class="pie">
+    <p>Catálogo de consulta. Para comprar, acércate a la papelería o escríbenos.</p>
+    <a
+      class="pie__whatsapp"
+      href="https://wa.me/573008411368?text=Hola%2C%20quisiera%20hacer%20una%20consulta."
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Abrir WhatsApp para consultar sobre el catálogo"
+      title="Consultar por WhatsApp"
+    >
+      <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <path d="M16 3.2a12.7 12.7 0 0 0-10.9 19.3L3.4 28.8l6.5-1.7A12.8 12.8 0 1 0 16 3.2Zm0 23.3a10.5 10.5 0 0 1-5.4-1.5l-.4-.2-3.8 1 1-3.7-.2-.4A10.5 10.5 0 1 1 16 26.5Zm5.8-7.8c-.3-.2-1.8-.9-2.1-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7.1a8.6 8.6 0 0 1-2.5-1.5 9.4 9.4 0 0 1-1.7-2.1c-.2-.4 0-.6.2-.8l.5-.6c.2-.2.2-.4.3-.6s0-.4 0-.6-.7-1.7-1-2.3c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4s-1.1 1.1-1.1 2.7 1.1 3.1 1.3 3.3a12 12 0 0 0 4.6 4c.6.3 1.1.5 1.5.6.7.2 1.3.2 1.8.1.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4s-.3-.2-.6-.4Z" />
+      </svg>
+    </a>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
