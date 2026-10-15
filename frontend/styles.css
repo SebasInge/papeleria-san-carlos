@@ -624,6 +624,16 @@ ul { list-style: none; margin: 0; padding: 0; }
   .subcategoria__icono { flex-basis: 1.75rem; height: 1.75rem; font-size: 0.9rem; }
 
   .banner__lamina { aspect-ratio: 3 / 2; }
+
+    .rejilla {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6rem;
+  }
+
+  .producto__cuerpo { padding: 0.6rem 0.7rem 0.8rem; }
+  .producto__nombre { font-size: 0.92rem; }
+  .producto__descripcion { font-size: 0.82rem; }
+  .producto__inicial { font-size: 1.6rem; }
 }
 
 /* ------------------------- Buscador ------------------------- */
