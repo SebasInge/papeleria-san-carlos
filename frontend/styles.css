@@ -400,8 +400,8 @@ ul { list-style: none; margin: 0; padding: 0; }
   z-index: 5;
   display: grid;
   place-items: center;
-  width: 3.5rem;
-  height: 3.5rem;
+  width: 4.5rem;
+  height: 4.5rem;
   border: 2px solid var(--negro);
   border-radius: 50%;
   background: var(--aguamarina);
@@ -411,8 +411,8 @@ ul { list-style: none; margin: 0; padding: 0; }
 }
 
 .pie__whatsapp svg {
-  width: 2rem;
-  height: 2rem;
+  width: 3rem;
+  height: 3rem;
   fill: currentColor;
 }
 
